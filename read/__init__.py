@@ -1,9 +1,11 @@
 # import xlrd
 # import xlutils.copy
 from xlrd import open_workbook
-from xlwt import Workbook
-from xlutils.copy import copy
+# from xlwt import Workbook
+# from xlutils.copy import copy
 import openpyxl
+import tkinter as tk
+from tkinter import filedialog
 import os
 
 file_path = 'C:\\Users\\23948\\Desktop\\excel\\人员列表汇理.xls'
@@ -32,6 +34,21 @@ dest_pattern_index = []
 read_excel_map = {}
 
 read_result_map = {}
+
+application_window = tk.Tk()
+file_types = [('excel文件', '.xls')]
+file_types1 = [('excel文件', '.xls'), ('excel文件', '.xlsx')]
+
+
+def open_file_win(title):
+
+    # f = askopenfilename(title='askopenfilename', initialdir="D:", filetypes=[('所有文件', '*.*'), ('Python源文件', '.py')])
+    # f2 = askopenfilename(title='选择源文件', initialdir="c:", filetypes=file_types1)
+    answer = filedialog.askopenfilenames(parent=application_window,
+                                         initialdir=os.getcwd(),
+                                         title=title,
+                                         filetypes=file_types1)
+    return answer
 
 
 # 读取xls

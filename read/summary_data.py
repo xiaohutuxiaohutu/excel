@@ -2,7 +2,7 @@
 # coding=UTF-8
 import openpyxl
 import os
-
+import read
 
 def summary_data(path):
     pattern_column = '状态'
@@ -60,7 +60,8 @@ def summary_data(path):
 
 
 if __name__ == '__main__':
-    input_file_path = input('请输入需要合并的excel表绝对路径，多个文件以英文,号隔开:\n')
+    input_file_path = read.open_file_win('请输入需要合并的excel表绝对路径，多个文件以英文,号隔开')
+    # input_file_path = input('请输入需要合并的excel表绝对路径，多个文件以英文,号隔开:\n')
     while input_file_path.strip() == '':
         input_file_path = input('写入的文件路径不能为空，请重新输入：\n')
     file_path = input_file_path.split(',')
