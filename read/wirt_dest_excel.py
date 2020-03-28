@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# coding=UTF-8
 # import xlrd
 # import xlutils.copy
 from xlrd import open_workbook

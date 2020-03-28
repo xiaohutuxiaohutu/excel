@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# coding=UTF-8
 from xlrd import open_workbook
 from xlwt import Workbook
 from xlutils.copy import copy
