@@ -10,6 +10,8 @@ rootDir = curDir[:curDir.find("excel\\") + len("excel\\")]  # 获取myProject，
 sys.path.append(rootDir)
 
 import read
+import tkinter as tk
+import tkinter.messagebox
 
 
 def summary_data(path):
@@ -17,10 +19,19 @@ def summary_data(path):
     patter_value = '激活'
     work_book = openpyxl.load_workbook(path, read_only=False)  #
     sheetnames = work_book.sheetnames
+
+    input_sheet_name = read.show_input_dialog('请选择需要汇总的表单，输入表单名或index序列号，用英文,号分割', sheetnames)
+    print(input_sheet_name)
+    summary_sheet_name = read.show_input_dialog('请选择要汇总到的表单，输入表单名或index序列号', sheetnames)
+    print(summary_sheet_name)
+    '''
+    
     print('读取到如下表单，请选择需要汇总的表单，输入表单名或index序列号，用英文,号分割:')
     print(sheetnames)
     input_sheet_name = input()
     summary_sheet_name = input('请选择要汇总到的表单，输入表单名或index序列号:\n')
+    '''
+
     sheet_names = input_sheet_name.split(',')
     result_list = []
     # 过滤需要的表单信息
@@ -68,12 +79,12 @@ def summary_data(path):
 
 
 if __name__ == '__main__':
-    input_file_path = read.open_file_win('请输入需要合并的excel表绝对路径，多个文件以英文,号隔开', read.xlsx_file_types)
-
+    input_file_path = read.open_file_win('请选择需要合并的excel表', read.xlsx_file_types)
+    # print(read.show_input_dialog('tile', 'message'))
     for index, item in enumerate(input_file_path):
         print('读取第%i个文件:%s' % (index + 1, item))
         summary_data(item)
-        # try:
-        #     summary_data(item)
-        # except:
-        #     print('第%i个文件处理失败:%s' % (index + 1, item))
+    # try:
+    #     summary_data(item)
+    # except:
+    #     print('第%i个文件处理失败:%s' % (index + 1, item))

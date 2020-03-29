@@ -9,8 +9,6 @@ from tkinter import filedialog
 import tkinter.messagebox
 import os
 
-root = tk.Tk()
-root.withdraw()
 # 默认需要匹配的列标签
 origin_pattern = '工号,岗位,身份证号,状态,店代码1,店代码2,店代码3,店代码4,店代码5'
 dest_pattern = '工号,岗位,身份证号,状态,经销店代码1,经销店代码2,经销店代码3,经销店代码4,经销店代码5'
@@ -20,8 +18,6 @@ dest_pattern = '工号,岗位,身份证号,状态,经销店代码1,经销店代�
 # dest_pattern_index = []
 
 
-application_window = tk.Tk()
-
 xls_file_types = [('excel文件', '.xls')]
 xlsx_file_types = [('excel文件', '.xlsx')]
 xls_xlsx_file_types = [('excel文件', '.xls'), ('excel文件', '.xlsx')]
@@ -29,16 +25,48 @@ xls_xlsx_file_types = [('excel文件', '.xls'), ('excel文件', '.xlsx')]
 
 # 打开文件选择窗口
 def open_file_win(title, file_type):
-    answer = filedialog.askopenfilenames(parent=application_window,
+    root = tk.Tk()
+    root.withdraw()
+    answer = filedialog.askopenfilenames(parent=root,
                                          initialdir=os.getcwd(),
                                          title=title,
                                          filetypes=file_type)
-    tk.Tk().wm_withdraw()
     if answer:
+        root.destroy()
         return answer
     else:
         tkinter.messagebox.showinfo('提示', '没有选择文件，请重新选择')
         open_file_win(title)
+
+
+def show_input_dialog(title, message):
+    def return_callback(event):
+        # print('quit...')
+        root.quit()
+
+    def close_callback():
+        tk.messagebox.showinfo('message', 'no click...')
+
+    root = tk.Tk(className=title)
+    root.wm_attributes('-topmost', 1)
+    screenwidth, screenheight = root.maxsize()
+    width = 800
+    height = 200
+    size = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
+    root.geometry(size)
+    root.resizable(0, 0)
+    lable = tk.Label(root, height=2)
+    lable['text'] = message
+    lable.pack()
+    entry = tk.Entry(root)
+    entry.bind('<Return>', return_callback)
+    entry.pack()
+    entry.focus_set()
+    root.protocol("WM_DELETE_WINDOW", close_callback)
+    root.mainloop()
+    str = entry.get()
+    root.destroy()
+    return str
 
 
 # 读取xls
