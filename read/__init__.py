@@ -6,86 +6,64 @@ from xlrd import open_workbook
 import openpyxl
 import tkinter as tk
 from tkinter import filedialog
+import tkinter.messagebox
 import os
 
-file_path = 'C:\\Users\\23948\\Desktop\\excel\\人员列表汇理.xls'
-dest_file_path = 'C:\\Users\\23948\\Desktop\\excel\\L1认证考试数据.xlsx'
-# 工号     岗位	身份证号	状态	店代码1	    店代码2	    店代码3	    店代码4	    店代码5
-# 工号     岗位	身份证号 状态     经销店代码1	经销店代码2	经销店代码3	经销店代码4	经销店代码5
-
-dest_file_path_xlsx = 'C:\\Users\\23948\\Desktop\\excel\\L1认证考试数据.xlsx'
+root = tk.Tk()
+root.withdraw()
 # 默认需要匹配的列标签
-default_pattern = {
-    '工号': '工号'
-    , '岗位': '岗位'
-    , '身份证号': '身份证号'
-    , '状态': '状态'
-    , '店代码1': '经销店代码1'
-    , '店代码2': '经销店代码2'
-    , '店代码3': '经销店代码3'
-    , '店代码4': '经销店代码4'
-    , '店代码5': '经销店代码5'
-}
 origin_pattern = '工号,岗位,身份证号,状态,店代码1,店代码2,店代码3,店代码4,店代码5'
 dest_pattern = '工号,岗位,身份证号,状态,经销店代码1,经销店代码2,经销店代码3,经销店代码4,经销店代码5'
-origin_pattern_index = []
-dest_pattern_index = []
-# excel_list = []
-read_excel_map = {}
+# 源文件需要读取的表头标签对应的列数集合
+# origin_pattern_index = []
+# 目标文件表头对应的列数集合
+# dest_pattern_index = []
 
-read_result_map = {}
 
 application_window = tk.Tk()
-file_types = [('excel文件', '.xls')]
-file_types1 = [('excel文件', '.xls'), ('excel文件', '.xlsx')]
+
+xls_file_types = [('excel文件', '.xls')]
+xlsx_file_types = [('excel文件', '.xlsx')]
+xls_xlsx_file_types = [('excel文件', '.xls'), ('excel文件', '.xlsx')]
 
 
-def open_file_win(title):
-
-    # f = askopenfilename(title='askopenfilename', initialdir="D:", filetypes=[('所有文件', '*.*'), ('Python源文件', '.py')])
-    # f2 = askopenfilename(title='选择源文件', initialdir="c:", filetypes=file_types1)
+# 打开文件选择窗口
+def open_file_win(title, file_type):
     answer = filedialog.askopenfilenames(parent=application_window,
                                          initialdir=os.getcwd(),
                                          title=title,
-                                         filetypes=file_types1)
-    return answer
+                                         filetypes=file_type)
+    tk.Tk().wm_withdraw()
+    if answer:
+        return answer
+    else:
+        tkinter.messagebox.showinfo('提示', '没有选择文件，请重新选择')
+        open_file_win(title)
 
 
 # 读取xls
 def read_excel_xls(path):
-    wb = open_workbook(file_path)
+    read_result_map = {}
+    read_excel_map = {}
+    wb = open_workbook(path)
     sheets = wb.sheets()
     for sheet in sheets:
         # print(u"表单 %s 共 %d 行 %d 列" % (sheet.name, sheet.nrows, sheet.ncols))
-        # print(sheet.name)
         for row in range(0, sheet.nrows):
-            # print(row)
             values = sheet.row_values(row)
             if row == 0:
                 read_result_map['header'] = values
                 continue
             else:
-
                 read_excel_map[values[0]] = values
-                # print(values[0])
-                # excel_list.insert(row, values)
-    # print(read_excel_map)
     read_result_map['rows'] = read_excel_map
-    # print(read_result_map)
     return read_result_map
 
 
-# read_excel_xls(file_path)
-
-
-# 读取xlsx
+# 读取xlsx 返回类型{'header':'','rows':'{key:[],key1:[].....}'}
 def read_excel_xlsx(path):
-    excel_list = []
-    # 输入文件路径
-    '''
-    read_file_path = input("请输入读取文件路径:\n")
-    print(read_file_path)
-    '''
+    read_excel_map = {}
+    read_result_map = {}
     work_book = openpyxl.load_workbook(path)  # 读取xlsx文件
     # names = data.get_sheet_names
     sheetnames = work_book.sheetnames
@@ -114,27 +92,12 @@ def read_excel_xlsx(path):
             else:
                 # print(line)
                 read_excel_map[line[0]] = line
-    print(read_excel_map)
+    # print(read_excel_map)
     read_result_map['rows'] = read_excel_map
     return read_result_map
-    # excel_list.insert(index, line)
-    # print(excel_list)
-    # table = data.get_sheet_by_name(names[0])  # 获得指定名称的页
-    # nrows = table.rows  # 获得行数 类型为迭代器
-    # ncols = table.columns  # 获得列数 类型为迭代器
-    # print(type(nrows))
-    # for row in nrows:
-    #     print(row)  # 包含了页名，cell，值
-    #     line = [col.value for col in row]  # 取值
-    #     print(line)
-    # # 读取单元格
-    # print(table.cell(1, 1).value)
-
-    # read_excel_xlsx(dest_file_path_xlsx)
 
 
 # 获取下标 pattern_list 需要匹配的列表，dest_list 被匹配的列表
-
 def get_index_list(pattern_list, dest_list):
     list = []
     for index_, value in enumerate(pattern_list):
@@ -144,26 +107,24 @@ def get_index_list(pattern_list, dest_list):
 
 
 # 写入 xlsx文件
-def write_xlsx(path):
+def write_xlsx(read_path, write_path):
     # 读取xlsx目标文件
-    work_book = openpyxl.load_workbook(path, read_only=False)  #
+    work_book = openpyxl.load_workbook(write_path, read_only=False)  #
     sheetnames = work_book.sheetnames
     print('读取到如下表单，请选择需要修改的表单，输入表单名或index序列号，用英文,号分割:')
     print(sheetnames)
     input_sheet_name = input()
-    # print(input_sheet_names)
-
     # 先读取源文件
-    if os.path.splitext(file_path)[1] == '.xls':
-        read_data = read_excel_xls(file_path)
+    if os.path.splitext(read_path)[1] == '.xls':
+        read_data = read_excel_xls(read_path)
     else:
-        read_data = read_excel_xlsx(file_path)
+        read_data = read_excel_xlsx(read_path)
     # 获取源文件的表头
     origin_header = read_data['header']
     origin_rows = read_data['rows']
     # print(origin_header)
     origin_index_list = get_index_list(origin_pattern.split(','), origin_header)
-    print(origin_index_list)
+    # print(origin_index_list)
     # 需要操作的sheet集合
     sheet_names = input_sheet_name.split(',')
     # 循环打开sheet表单操作
@@ -177,16 +138,16 @@ def write_xlsx(path):
         # columns = sheet.columns
         # 需要修改的当前sheet的表头，用来对比
         cur_sheet_header = []
-        for index, row in enumerate(rows):
+        for index2, row in enumerate(rows):
             # print(row)
             line = [col.value for col in row]  # 取值
 
-            if index == 0:
+            if index2 == 0:
                 # 第一行表头
                 dest_index_list = get_index_list(dest_pattern.split(','), line)
                 continue
             else:
-                print(line)
+                # print(line)
                 # 匹配行数修改内容
                 # 获取dest_index_list[0]
                 dest_index = dest_index_list[0]
@@ -194,59 +155,26 @@ def write_xlsx(path):
                 # print(key_value)
                 # 获取元数据匹配的行
                 origin_row_value = origin_rows[key_value]
-                print(origin_row_value)
+                # print(origin_row_value)
                 # print(origin_row_value)
                 for index1, value in enumerate(origin_index_list):
                     value_ = origin_row_value[value]
                     col_num = dest_index_list[index1]
-                    sheet.cell(row=index + 1, column=col_num + 1).value = value_
-                    print(sheet.cell(row=index + 1, column=col_num + 1).value)
+                    sheet.cell(row=index2 + 1, column=col_num + 1).value = value_
+                    # print(sheet.cell(row=index2 + 1, column=col_num + 1).value)
                 # break
     # work_book.close()
-    work_book.save(path)
+    work_book.save(write_path)
+
+
+# 写入xls文件
+def write_xls(read_path, write_path):
+    print()
 
 
 if __name__ == '__main__':
-    write_xlsx(dest_file_path_xlsx)
-
-'''
-
-def read_file(file_url):
-    try:
-        data = open_workbook(file_url)
-        sheet = data.get_sheet('人员列表')
-        print(sheet)
-        return data
-    except Exception as e:
-        print(str(e))
-
-'''
-
-
-# data = read_file(file_path)
-# rb = open_workbook(file_path)
-# index = rb.sheet_by_index(0)
-# wb = copy(rb)
-# active_sheet = Workbook.get_active_sheet
-# print(active_sheet)
-# sheets = wb.sheets()
-# for sheet in sheets:
-#     value = sheet.cell(0, 0).value
-#     print(value)
-# print(len(sheets))
-# index = wb.sheet_by_index(0)
-# book = index.book
-# rows = book.ragged_rows
-# print(rows)
-# print(index)
-# print(book)
-
-
-# s = wb.sheet_by_index(0)
-
-# sheets = wb.get_sheets()
-# print(sheets)
-# print(s.cell(0, 0).value)
+    print()
+    # write_xlsx(dest_file_path_xlsx)
 
 
 def filter_excel(workbook, column_name=0, by_name='Sheet0'):

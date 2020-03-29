@@ -2,7 +2,15 @@
 # coding=UTF-8
 import openpyxl
 import os
+
+import sys
+
+curDir = os.getcwd()  # 获取当前文件路径
+rootDir = curDir[:curDir.find("excel\\") + len("excel\\")]  # 获取myProject，也就是项目的根路径
+sys.path.append(rootDir)
+
 import read
+
 
 def summary_data(path):
     pattern_column = '状态'
@@ -25,10 +33,10 @@ def summary_data(path):
             sheet = work_book[name]
         # 获取当前表单的所有行数
         rows = sheet.rows
-        for index, row in enumerate(rows):
+        for index1, row in enumerate(rows):
             # print(row)
             line = [col.value for col in row]  # 取值
-            if index == 0:
+            if index1 == 0:
                 # 第一行表头
                 # print(line)
                 pattern_column_index = line.index(pattern_column)
@@ -42,10 +50,10 @@ def summary_data(path):
     # print(result_list)
     # 读取要合并的表单
     if summary_sheet_name.isdigit():
-        print('sheet_name:' + sheetnames[int(summary_sheet_name) - 1])
+        # print('sheet_name:' + sheetnames[int(summary_sheet_name) - 1])
         sheet1 = work_book.worksheets[int(summary_sheet_name) - 1]
     else:
-        print('sheet_name:' + summary_sheet_name)
+        # print('sheet_name:' + summary_sheet_name)
         sheet1 = work_book[summary_sheet_name]
     max_row = sheet1.max_row
     print('最大行数%i;' % max_row)
@@ -60,16 +68,12 @@ def summary_data(path):
 
 
 if __name__ == '__main__':
-    input_file_path = read.open_file_win('请输入需要合并的excel表绝对路径，多个文件以英文,号隔开')
-    # input_file_path = input('请输入需要合并的excel表绝对路径，多个文件以英文,号隔开:\n')
-    while input_file_path.strip() == '':
-        input_file_path = input('写入的文件路径不能为空，请重新输入：\n')
-    file_path = input_file_path.split(',')
-    for index, item in enumerate(file_path):
+    input_file_path = read.open_file_win('请输入需要合并的excel表绝对路径，多个文件以英文,号隔开', read.xlsx_file_types)
+
+    for index, item in enumerate(input_file_path):
         print('读取第%i个文件:%s' % (index + 1, item))
-        while os.path.splitext(item)[1] not in ['.xlsx']:
-            item = input('写入的文件类型不支持，目前只支持xlsx，请重新输入：\n')
-        try:
-            summary_data(item)
-        except:
-            print('第%i个文件处理失败:%s' % (index + 1, item))
+        summary_data(item)
+        # try:
+        #     summary_data(item)
+        # except:
+        #     print('第%i个文件处理失败:%s' % (index + 1, item))
