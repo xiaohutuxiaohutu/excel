@@ -200,8 +200,80 @@ def write_xls(read_path, write_path):
     print()
 
 
+def test_dialog(title, message, labels):
+    # master = tk.Tk()
+    master = tk.Tk(className=title)
+    master.wm_attributes('-topmost', 1)
+    screenwidth, screenheight = master.maxsize()
+    width = 800
+    height = 200
+    size = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
+    master.geometry(size)
+    master.resizable(0, 0)
+
+    tk.Label(master, text=message).grid(row=0)
+    label_values = []
+    label_values1 = []
+    for index1, value in enumerate(labels):
+        tk.Label(master, text=value + "：").grid(row=index1 + 1)
+        # e = tk.StringVar()
+
+        label_values.insert(index1, tk.StringVar)
+        e = tk.Entry(master, textvariable=label_values[index1]).grid(row=index1 + 1, column=1, padx=10, pady=5)
+        label_values1.insert(index1, e)
+        # e = tk.StringVar()
+        # entry = tk.Entry(master, textvariable=e).grid(row=index1 + 1, column=1, padx=10, pady=5)
+        # entry.grid(row=index1 + 1, column=1, padx=10, pady=5)
+        # entry.set('input your text here')
+        # entry.pack()
+
+        # e = tk.Entry(master)
+        # e.grid(row=index1 + 1, column=1, padx=10, pady=5)
+        # tk.Label(master, text="作者：").grid(row=2)
+
+        # e1 = tk.Entry(master)
+        # e2 = tk.Entry(master)
+        # e1.grid(row=1, column=1, padx=10, pady=5)
+        # e2.grid(row=2, column=1, padx=10, pady=5)
+
+    def show():
+        # print("作品：《%s》" % e1.get())
+        # print("作者：%s" % e2.get())
+        # e1.delete(0, "end")
+        # e2.delete(0, "end")
+        master.quit()
+        # master.quit
+
+    # tk.Button(master, text="获取信息", width=10, command=show).grid(row=3, column=0, sticky="w", padx=10, pady=5)
+    # tk.Button(master, text="退出", width=10, command=show).grid(row=3, column=1, sticky="e", padx=10, pady=5)
+    tk.Button(master, text="确定", width=10, command=master.quit).grid(row=len(labels) + 1, column=1, sticky="e", padx=10, pady=5)
+    master.mainloop()
+    result = {}
+    for index2, value in enumerate(labels):
+        index3 = tk.Entry().index(index2 + 1)
+
+        result[value] = index3
+    # value1 = e1.get()
+    # value2 = e2.get()
+    master.destroy()
+    result_value = []
+    for index5, vlaue1 in enumerate(label_values1):
+        print(vlaue1)
+    for index4, value in enumerate(label_values):
+        print(value())
+        # print(tk.Entry(value).get())
+        # result_value.insert(index4, tk.Entry().get())
+
+    return label_values
+
+
 if __name__ == '__main__':
     print()
+    # dialog = test_dialog('title', 'sheet_name1,sheet_name2,sheetName3,sheent_name4', ['待合并表单名字', '需要合并到的表单名字', '待合并表单过滤列', '待合并表单过滤条件'])
+    # for i,value in enumerate(dialog):
+    #   get = value().get()
+    #   print(get)
+    # print(dialog)
     # write_xlsx(dest_file_path_xlsx)
 
 
