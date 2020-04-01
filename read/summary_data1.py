@@ -50,6 +50,7 @@ def summary_data(path):
                 cur_max_score = line[4]
                 for index2, value1 in enumerate(dian_dai_ma_index):
                     dian_dai_ma = line[value1]
+                    dian_dai_ma = str(dian_dai_ma).upper()
                     if dian_dai_ma == '':
                         continue
                     # 店代码存在
@@ -72,7 +73,9 @@ def summary_data(path):
                         # 已存在是字符串，当前行是数字，替换当前行
                         elif not max_score.isdigit() and cur_max_score.isdigit():
                             all_map[dian_dai_ma] = line
-                    # 店代码不存在，直接插入
+                    # 店代码不存在，判断 如果未提交且冻结状态，略过，否则直接插入
+                    elif str(line[3]) == '冻结' and not str(line[4]).isdigit():
+                        continue
                     else:
                         all_map[dian_dai_ma] = line
     # 合并数据

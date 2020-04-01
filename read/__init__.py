@@ -273,7 +273,9 @@ def test_dialog(title, message, labels):
 
         label_values.insert(index1, tk.StringVar)
         # e = tk.Entry(master, textvariable=label_values[index1]).grid(row=index1 + 1, column=1, padx=10, pady=5)
-        label_values1.insert(index1, tk.Entry(master, textvariable=label_values[index1]).grid(row=index1 + 1, column=1, padx=10, pady=5))
+        label_values1.insert(index1,
+                             tk.Entry(master, textvariable=label_values[index1]).grid(row=index1 + 1, column=1, padx=10,
+                                                                                      pady=5))
         # e = tk.StringVar()
         # entry = tk.Entry(master, textvariable=e).grid(row=index1 + 1, column=1, padx=10, pady=5)
         # entry.grid(row=index1 + 1, column=1, padx=10, pady=5)
@@ -299,7 +301,8 @@ def test_dialog(title, message, labels):
 
     # tk.Button(master, text="获取信息", width=10, command=show).grid(row=3, column=0, sticky="w", padx=10, pady=5)
     # tk.Button(master, text="退出", width=10, command=show).grid(row=3, column=1, sticky="e", padx=10, pady=5)
-    tk.Button(master, text="确定", width=10, command=master.quit).grid(row=len(labels) + 1, column=1, sticky="e", padx=10, pady=5)
+    tk.Button(master, text="确定", width=10, command=master.quit).grid(row=len(labels) + 1, column=1, sticky="e", padx=10,
+                                                                     pady=5)
     master.mainloop()
     result = {}
     # for index2, value in enumerate(labels):
@@ -329,6 +332,10 @@ def insert_sheet(data_list, sheet, start_row_index):
 
 if __name__ == '__main__':
     print()
+    str = '123ab4dgd'
+    print(str.upper())
+    str1 = ''
+    print(str1)
     # dialog = test_dialog('title', 'sheet_name1,sheet_name2,sheetName3,sheent_name4', ['待合并表单名字', '需要合并到的表单名字', '待合并表单过滤列', '待合并表单过滤条件'])
     # dialog = show_two_dialog('title', 'sheet_name1,sheet_name2,sheetName3,sheent_name4', ['待合并表单名字', '需要合并到的表单名字', '待合并表单过滤列', '待合并表单过滤条件'])
     # dialog = show_two_dialog('请根据需要选择表单，输入表单名或index序列号，用英文,号分割', ['LI认证考试（20180816）', 'LI认证考试（20180126）', 'L1认证考试（20150128）', '黎经理专用版（截止20200225现存激活FAFC数据）'],
