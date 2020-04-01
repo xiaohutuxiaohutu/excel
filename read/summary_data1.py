@@ -95,7 +95,7 @@ def summary_data(path):
 
 
 if __name__ == '__main__':
-    input_file_path = read.open_file_win('请选择需要合并的excel表', read.xlsx_file_types)
+    input_file_path = read.open_multi_file_win('请选择需要合并的excel表', read.xlsx_file_types)
     for index, item in enumerate(input_file_path):
         print('读取第%i个文件:%s' % (index + 1, item))
         summary_data(item)

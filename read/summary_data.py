@@ -13,28 +13,18 @@ import read
 
 
 def summary_data(path):
-    # pattern_column = '状态'
-    # patter_value = '激活'
-    # pattern_column = read.show_input_dialog('请选择过滤列名称', '')
-    # patter_value = read.show_input_dialog('请选择过滤条件', '')
-
     two_dialog = read.show_two_dialog('', '', ['请选择过滤列名称', '请选择过滤条件'])
     pattern_column = two_dialog[0]
     patter_value = two_dialog[1]
-    print(two_dialog)
+    # print(two_dialog)
     work_book = openpyxl.load_workbook(path, read_only=False)  #
     sheetnames = work_book.sheetnames
-    print(sheetnames)
-    # input_sheet_name = read.show_input_dialog('请选择需要汇总的表单，输入表单名或index序列号，用英文,号分割', sheetnames)
-    # print(input_sheet_name)
-    # summary_sheet_name = read.show_input_dialog('请选择要汇总到的表单，输入表单名或index序列号', sheetnames)
-    # print(summary_sheet_name)
-
-    two_dialog1 = read.show_two_dialog('请根据需要选择表单，输入表单名或index序列号，用英文,号分割', sheetnames, ['请选择需要汇总的表单', '请选择要汇总到的表单'])
+    # print(sheetnames)
+    two_dialog1 = read.show_two_dialog('请选择对应表单，输入表单名或index序列号，用英文,号分割', sheetnames, ['请选择需要汇总的表单', '请选择要汇总到的表单'])
     input_sheet_name = two_dialog1[0]
     summary_sheet_name = two_dialog1[1]
-    print(input_sheet_name)
-    print(summary_sheet_name)
+    # print(input_sheet_name)
+    # print(summary_sheet_name)
     sheet_names = input_sheet_name.split(',')
     result_list = []
     # 过滤需要的表单信息
@@ -52,17 +42,12 @@ def summary_data(path):
             line = [col.value for col in row]  # 取值
             if index1 == 0:
                 # 第一行表头
-                # print(line)
-                # pattern_column = read.show_input_dialog('请选择过滤列名称', line)
-                # patter_value = read.show_input_dialog('请选择过滤条件', '')
                 pattern_column_index = line.index(pattern_column)
-                # print(pattern_column_index)
                 continue
             else:
                 # print(line)
                 if patter_value == line[pattern_column_index]:
                     result_list.insert(len(result_list), line)
-                # break
     # print(result_list)
     # 读取要合并的表单
     if summary_sheet_name.isdigit():
@@ -86,7 +71,7 @@ def summary_data(path):
 if __name__ == '__main__':
     # pattern_column = read.show_input_dialog('请选择过滤列名称', '')
 
-    input_file_path = read.open_file_win('请选择需要合并的excel表', read.xlsx_file_types)
+    input_file_path = read.open_multi_file_win('请选择需要合并的excel表', read.xlsx_file_types)
     for index, item in enumerate(input_file_path):
         print('读取第%i个文件:%s' % (index + 1, item))
         summary_data(item)

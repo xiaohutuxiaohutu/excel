@@ -23,8 +23,8 @@ xlsx_file_types = [('excel文件', '.xlsx')]
 xls_xlsx_file_types = [('excel文件', '.xls'), ('excel文件', '.xlsx')]
 
 
-# 打开文件选择窗口
-def open_file_win(title, file_type):
+# 打开文件多选窗口选择窗口
+def open_multi_file_win(title, file_type):
     root = tk.Tk()
     root.withdraw()
     answer = filedialog.askopenfilenames(parent=root,
@@ -36,9 +36,25 @@ def open_file_win(title, file_type):
         return answer
     else:
         tkinter.messagebox.showinfo('提示', '没有选择文件，请重新选择')
-        open_file_win(title)
+        open_multi_file_win(title)
 
 
+def open_single_file_win(title, file_type):
+    root = tk.Tk()
+    root.withdraw()
+    answer = filedialog.askopenfilename(parent=root,
+                                        initialdir=os.getcwd(),
+                                        title=title,
+                                        filetypes=file_type)
+    if answer:
+        root.destroy()
+        return answer
+    else:
+        tkinter.messagebox.showinfo('提示', '没有选择文件，请重新选择')
+        open_single_file_win(title)
+
+
+# 单个输入弹框
 def show_input_dialog(title, message):
     def return_callback(event):
         # print('quit...')
@@ -69,14 +85,14 @@ def show_input_dialog(title, message):
     return str
 
 
-# 读取xls
+# 读取xls所有表单的值 返回类型{'header':'','rows':'{key:[],key1:[].....}'}
 def read_excel_xls(path):
     read_result_map = {}
     read_excel_map = {}
     wb = open_workbook(path)
     sheets = wb.sheets()
     for sheet in sheets:
-        # print(u"表单 %s 共 %d 行 %d 列" % (sheet.name, sheet.nrows, sheet.ncols))
+        print(u"表单 %s 共 %d 行 %d 列" % (sheet.name, sheet.nrows, sheet.ncols))
         for row in range(0, sheet.nrows):
             values = sheet.row_values(row)
             if row == 0:
@@ -134,7 +150,7 @@ def get_index_list(pattern_list, dest_list):
     return list
 
 
-# 写入 xlsx文件
+# 根据源文件工号唯一值修改目标文件相同工号的数据 xlsx文件
 def write_xlsx(read_path, write_path):
     # 读取xlsx目标文件
     work_book = openpyxl.load_workbook(write_path, read_only=False)  #
