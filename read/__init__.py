@@ -332,10 +332,17 @@ def insert_sheet(data_list, sheet, start_row_index):
 
 if __name__ == '__main__':
     print()
-    str = '123ab4dgd'
-    print(str.upper())
-    str1 = ''
-    print(str1)
+    str1 = '123.6'
+    print(float(str(str1)))
+    print(str(str1).split('.')[0].isdigit())
+    print(str1.split('.')[0].isnumeric())
+    print(str1.isalnum())
+    print(str1.isdecimal())
+    print()
+    str1 = '未通过'
+    print(str1.split('.')[0].isnumeric())
+    print(str1.isalnum())
+    print(str1.isdecimal())
     # dialog = test_dialog('title', 'sheet_name1,sheet_name2,sheetName3,sheent_name4', ['待合并表单名字', '需要合并到的表单名字', '待合并表单过滤列', '待合并表单过滤条件'])
     # dialog = show_two_dialog('title', 'sheet_name1,sheet_name2,sheetName3,sheent_name4', ['待合并表单名字', '需要合并到的表单名字', '待合并表单过滤列', '待合并表单过滤条件'])
     # dialog = show_two_dialog('请根据需要选择表单，输入表单名或index序列号，用英文,号分割', ['LI认证考试（20180816）', 'LI认证考试（20180126）', 'L1认证考试（20150128）', '黎经理专用版（截止20200225现存激活FAFC数据）'],
