@@ -16,7 +16,7 @@ def summary_data(path):
     work_book = openpyxl.load_workbook(path, read_only=False)  #
     sheetnames = work_book.sheetnames
     print(sheetnames)
-    input_sheet_name = read.show_input_dialog('请选择需要读取的表单明或位置', sheetnames)
+    input_sheet_name = read.show_input_dialog('请选择需要读取的表名或位置', sheetnames)
     sheet_names = input_sheet_name.split(',')
     # 工号	姓名	岗位	状态	最高分数	店代码1	店代码2	店代码3	店代码4	店代码5
     # 过滤需要的表单信息
@@ -94,6 +94,7 @@ def summary_data(path):
     work_book.save(path)
 
 
+# 将指定表单内 每个店的数据只留一条（通过或删除），其他删除
 if __name__ == '__main__':
     input_file_path = read.open_multi_file_win('请选择需要合并的excel表', read.xlsx_file_types)
     for index, item in enumerate(input_file_path):

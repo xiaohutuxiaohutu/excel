@@ -68,6 +68,7 @@ def summary_data(path):
     work_book.save(path)
 
 
+# 根据条件将一个excel表格中指定的表单数据汇总到 指定的表单内
 if __name__ == '__main__':
     # pattern_column = read.show_input_dialog('请选择过滤列名称', '')
 
