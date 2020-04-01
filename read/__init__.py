@@ -304,6 +304,13 @@ def test_dialog(title, message, labels):
     return label_values
 
 
+# 插入数据到表单
+def insert_sheet(data_list, sheet, start_row_index):
+    for row_index in range(0, len(data_list)):
+        for col_index in range(0, len(data_list[row_index])):
+            sheet.cell(row=row_index + start_row_index, column=col_index + 1).value = data_list[row_index][col_index]
+
+
 if __name__ == '__main__':
     print()
     # dialog = test_dialog('title', 'sheet_name1,sheet_name2,sheetName3,sheent_name4', ['待合并表单名字', '需要合并到的表单名字', '待合并表单过滤列', '待合并表单过滤条件'])
