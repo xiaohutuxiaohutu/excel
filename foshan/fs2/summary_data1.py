@@ -10,9 +10,15 @@ rootDir = curDir[:curDir.find("excel\\") + len("excel\\")]  # 获取myProject，
 sys.path.append(rootDir)
 
 import read
+import foshan
+
+sheet_1_title = foshan.sheet1_title
+sheet_2_title = foshan.sheet2_title
+template_title = foshan.write_sheet_title
 
 
 def get_sheet1_row_values(work_book, start_index, col_list):
+    # work_book = openpyxl.load_workbook(path, read_only=False)
     # 第一个表单 从第三行开始读取 读取列数 第二列 实施事项名称，第三列 实施事项编码 第六列  是否分情形，
     # sheet_1_col_index = [1, 2, 5]
     sheet_1 = work_book.worksheets[0]
@@ -34,12 +40,14 @@ def get_sheet1_row_values(work_book, start_index, col_list):
 
 # 获取第二个表单敏感找事项分组
 def get_sheet2_row_values(work_book, start_index, col_list):
+    # sheet_2_col_index = [1, 4, 5, 7, 9, 10, 11, 13, 14, 15, 16]
     sheet_2_col_index = [1, 4, 5, 7, 9, 10, 11, 12, 13, 14, 15, 16]
     sheet_2 = work_book.worksheets[1]
     sheet_2_rows = sheet_2.rows
 
     sheet2_row_maps = {}
     for sheet_2_row_index, row in enumerate(sheet_2_rows):
+        # print(sheet_0_row_index)
         line = [col.value for col in row]  # 取值
         if sheet_2_row_index == 0:
             continue
@@ -48,6 +56,8 @@ def get_sheet2_row_values(work_book, start_index, col_list):
             line_item_name = line[1]
             if line_item_name is None or line_item_name == 'None':
                 continue
+            # print('line_item_name:' + line_item_name)
+            # print(line_item_name)
             temp_value = []
             # 获取指定列的值
             for line_index in sheet_2_col_index:
@@ -88,6 +98,7 @@ def write_template(work_book, line1_value, line2_value, mat_codes):
         return
     sheet = work_book.worksheets[0]
     max_row = sheet.max_row + 1
+    # ['*实施事项名称', '情形名称(当情形材料时必填)', '*材料名称', '材料性质', '*是否纸质必需(是|否)', '*是否电子必需(是|否)', '*是否支持容缺(是|否)', '容缺情形', '*是否批文批复(是|否)', '*是否需要签章(是|否)', '原件数量', '复印件数量']
     value_len = len(line2_value)
     for row_index in range(0, value_len):
         row_value = line2_value[row_index]
@@ -102,6 +113,8 @@ def write_template(work_book, line1_value, line2_value, mat_codes):
         sheet.cell(row=row_index + max_row, column=3).value = line1_value[1]
         # 第四列 *是否情形材料(是|否)
         sheet.cell(row=row_index + max_row, column=4).value = line1_value[2]
+        # for col_index1 in range(0, len(line1_value)):
+        #     sheet.cell(row=row_index + max_row, column=col_index1 + 2).value = line1_value[col_index1]
         # 插入第5列 情形名称
         if line1_value[2] == '是':
             sheet.cell(row=row_index + max_row, column=5).value = '情形一：' + row_value[1]
@@ -110,6 +123,7 @@ def write_template(work_book, line1_value, line2_value, mat_codes):
         # 第6列 父级情形名称
         sheet.cell(row=row_index + max_row, column=6).value = '请选择办理的情形？'
 
+        sheet_2_col_index = [1, 4, 5, 7, 9, 10, 11, 12, 13, 14, 15, 16]
         # 第7列 材料名称  个人身份证明 申请人身份证明
         mat_name = '个人身份证明' if row_value[2] == '申请人身份证明' else row_value[2]
         sheet.cell(row=row_index + max_row, column=7).value = mat_name
@@ -127,15 +141,13 @@ def write_template(work_book, line1_value, line2_value, mat_codes):
         # 12 *是否电子必需(是|否)
         # sheet.cell(row=row_index + max_row, column=12).value = row_value[5]
         sheet.cell(row=row_index + max_row, column=12).value = '是'
-
-        # 13 * *是否支持容缺(是|否) ==None 否
         rong_que = '否' if (row_value[6] is None or row_value[6] == 'None') else row_value[6]
+        # 13 * *是否支持容缺(是|否) ==None 否
         sheet.cell(row=row_index + max_row, column=13).value = rong_que
 
         # 14 容缺情形 ==None 忽略
         if row_value[7] is not None and row_value[7] != 'None':
             sheet.cell(row=row_index + max_row, column=14).value = row_value[7]
-
         # 15*是否批文批复(是|否) ==None 否
         pi_wen = '否' if (row_value[8] is None or row_value[8] == 'None') else row_value[8]
         sheet.cell(row=row_index + max_row, column=15).value = pi_wen
@@ -143,10 +155,8 @@ def write_template(work_book, line1_value, line2_value, mat_codes):
         # 16 *是否需要签章  ==None 是
         qian_zhang = '是' if (row_value[9] is None or row_value[9] == 'None') else row_value[9]
         sheet.cell(row=row_index + max_row, column=16).value = qian_zhang
-
         # 17 原件数量
         sheet.cell(row=row_index + max_row, column=17).value = row_value[10]
-
         # 18 复印件数量
         sheet.cell(row=row_index + max_row, column=18).value = row_value[11]
 
@@ -166,13 +176,18 @@ def summary_data():
             continue
         else:
             item_name = value[0]
+            # print('item_name:' + item_name)
             if str(item_name).startswith('禅城区'):
                 new_item_name = str(item_name)[3:]
             else:
                 new_item_name = item_name
+            # print('new_item_name:' + new_item_name)
             map_values = sheet2_map_values.get(new_item_name)
             if map_values is not None or map_values != 'None':
+                # print(map_values)
                 write_template(work_book, value, map_values, mat_codes)
+        # print()
+
     work_book.save(dest_path)
 
 
